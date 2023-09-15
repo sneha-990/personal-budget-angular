@@ -2,12 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <!-- This is an SEO change -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- This is an SEO change -->
     <meta name="description" content="This is a website for personal budget management and awareness"/>
+    <!-- This is an SEO change -->
     <meta property="og:title" content="Personal Budget" />
+    <!-- This is an SEO change -->
     <meta property="og:type" content="video.movie" />
+    <!-- This is an SEO change -->
     <meta property="og:url" content="https://personal-budget" />
+    <!-- This is an SEO change -->
     <meta property="og:image" content="/bg.png" alt="this is a background image"/>
+    <!-- This is an SEO change -->
     <meta property="keywords" content="meta keywords, personal finance, personal budget, finance management, budget management, finance, management, money" />
     <title>Personal Budget</title>
     <link rel="stylesheet" href="./reset.css">
@@ -34,7 +41,7 @@
         <div class="container center">
     
             <div class="page-area">
-    
+                <!-- This is an Semantic HTML change -->
                 <article class="text-box">
                     <h1 id="main">Stay on track</h1>
                     <p>
@@ -44,6 +51,7 @@
                     </p>
                 </article>
         
+                <!-- This is an Semantic HTML change -->
                 <article class="text-box">
                     <h1>Alerts</h1>
                     <p>
@@ -51,6 +59,7 @@
                     </p>
                 </article>
         
+                <!-- This is an Semantic HTML change -->
                 <article class="text-box">
                     <h1>Results</h1>
                     <p>
@@ -60,10 +69,11 @@
                     </p>
                 </article>
         
+                <!-- This is an Semantic HTML change -->
                 <article class="text-box">
                     <h1>Free</h1>
                     <p>
-                        This app is free!!! And you are the only one holding your data!
+                        <canvas id="myChart" width="400px", height="400px"></canvas>
                     </p>
                 </article>
             </div>
@@ -79,7 +89,57 @@
         </div>
     </footer>
 
+    <!-- This is an A11y change -->
     <li><a class="skip-to-content-link" href="#main">Skip to content</a></li>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.5.0/axios.min.js" integrity="sha512-aoTNnqZcT8B4AmeCFmiSnDlc4Nj/KPaZyB5G7JnOnUEkdNpCZs1LCankiYi01sLTyWy+m2P+W4XM+BuQ3Q4/Dg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.min.js" integrity="sha512-7U4rRB8aGAHGVad3u2jiC7GA5/1YhQcQjxKeaVms/bT66i3LVBMRcBI9KwABNWnxOSwulkuSXxZLGuyfvo7V1A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        var dataSource = {
+            datasets: [
+                {
+                    data: [30, 40, 50],
+                    backgroundColor: [
+                        '#0AFAF7',
+                        '#73FA0A',
+                        '#320AFA',
+                        '#FA0A0A',
+                        '#FA5E0A'
+                    ]
+                }
+            ], 
+            labels: [
+                'Eat out',
+                'Rent',
+                'Groceries'
+            ]
+        };
+
+        function createChart() {
+            var ctx = document.getElementById('myChart').getContext('2d');
+            var myPieChart = new Chart(ctx, {
+                type: 'pie',
+                data: dataSource
+            })
+        }
+        function getBudget()
+            {
+                axios.get('/budget')
+                .then(function (res)
+                {
+                    console.log(res.data);
+                    for(var i=0; i < res.data.myBudget.length;i++)
+                    {
+                        dataSource.datasets[0].data[i] = res.data.myBudget[i].budget;
+                        dataSource.labels[i] = res.data.myBudget[i].title;
+                    }
+                    createChart();
+                });
+
+            }
+        getBudget();
+    </script>
 
 </body>
 </html>
