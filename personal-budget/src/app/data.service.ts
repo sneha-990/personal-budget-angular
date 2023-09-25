@@ -1,46 +1,26 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DataService {
+  private data: any[] = []; // The variable to store the fetched data
+  private dataSubject: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
 
-  constructor(private http: HttpClient) { 
+  constructor(private http: HttpClient) {}
 
-  }
-
-  public dataSource = {
-  
-    datasets: [
-        {
-            data: [] as any,
-            backgroundColor: [
-                '#ffcd56',
-                '#ff6384',
-                '#36a2eb',
-                '#fd6b19',
-                '#ff0000',
-                '#0000ff',
-                '#4d5791',
-            ]
-        }
-    ],
-    labels: [] as any
-  };
-  
-  public data: any;
-
-  async fetchData() {
-    if (this.dataSource.datasets[0].data.length == 0 || this.dataSource.labels.length == 0) {
-
-      this.http.get('http://localhost:3000/budget').subscribe((res: any) => {
-        for (var i = 0; i < res.myBudget.length; i++) {
-          this.dataSource.datasets[0].data[i] = res.myBudget[i].budget;
-          this.dataSource.labels[i] = res.myBudget[i].title;
-        }
-      })
+  fetchDataIfNeeded(): void {
+    if (this.data.length === 0) {
+      this.http.get('http://localhost:3000/data').subscribe((response: any) => {
+        this.data = response; // Store the fetched data
+        this.dataSubject.next(this.data); // Update the BehaviorSubject
+      });
     }
   }
 
+  getData(): Observable<any[]> {
+    return this.dataSubject.asObservable();
+  }
 }
